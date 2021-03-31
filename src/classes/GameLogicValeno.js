@@ -15,10 +15,14 @@ class GameLogic {
     this.passwordLength = passwordLength;
     /** @type {Boolean|Number} The thing the thangs the thong */
     this.running = false;
+    /** @type {Boolean|Number}*/
+    this.awaitingAnswer = false;
     /** @type {String|Number} */
     this.currentPassword = undefined;
     /** @type {Discord.GuildMember} */
     this.lastMember = undefined;
+
+    this.checkRound = this.checkRound.bind(this);
   }
 
   /**
@@ -45,6 +49,8 @@ class GameLogic {
     if (!this.running) return;
 
     msg.channel.send("Resultado: ??????");
+
+    if (this.awaitingAnswer) this.client.off("message", this.checkRound);
   }
 
   /**
@@ -74,8 +80,8 @@ class GameLogic {
 
     this.lastMember = newMember;
 
-    this._checkRound = this.checkRound.bind(this);
-    this.client.on("message", this._checkRound);
+    this.awaitingAnswer = true;
+    this.client.on("message", this.checkRound);
   }
 
   /**
@@ -87,7 +93,8 @@ class GameLogic {
       return;
     }
 
-    this.client.off("message", this._checkRound);
+    this.client.off("message", this.checkRound);
+    this.awaitingAnswer = false;
 
     if (msg.cleanContent != this.currentPassword) {
       msg.reply("Você errou!");
@@ -159,6 +166,9 @@ export default GameLogic;
 /*
 
 Pseudocoisa
+
+Problemas:
+* Quando dá `game end` ele ainda entende o chute
 
 start() {
   setup das paradas
