@@ -115,13 +115,19 @@ class GameLogic {
    */
   async respond(msg, newMember) {
     msg.channel.send(`<@${newMember.id}>`);
-    msg.channel.send("3");
-    await sleep(1000);
-    msg.channel.send("2");
-    await sleep(1000);
-    msg.channel.send("1");
-    await sleep(1000);
-    msg.channel.send(`digite: **${this.currentPassword}**`);
+
+    const [countdownMsg] = await Promise.all([
+      msg.channel.send("_3…_"),
+      sleep(1000),
+    ]);
+    await Promise.all([countdownMsg.edit("_3… 2…_"), sleep(1000)]);
+    await Promise.all([countdownMsg.edit("_3… 2… 1…_"), sleep(1000)]);
+    await countdownMsg.edit(`digite: **${this.currentPassword}**`);
+
+    // msg.channel.send("2");
+    // msg.channel.send("1");
+    // await sleep(1000);
+    // msg.channel.send(`digite: **${this.currentPassword}**`);
   }
 
   /**
@@ -155,21 +161,46 @@ export default GameLogic;
 Pseudocoisa
 
 start() {
+  setup das paradas
+  next()
+}
+
+end() {
+  OFF awaitResponse()
+  toca "tchau querida — Pai"
+}
+
+next() {
   escolhe nova pessoa
-  sorteia string
+  sorteia a string
   faz o countdown
   mostra a string
+  toca "Banheira do Gugu OST"
   ON awaitResponse()
+  contador()
+}
+
+contador(){
+  toca "tema passa ou repassa"
+  conta tempo restante para responder
+  tempo termina:
+    toca "não consegue - silvio"
+    OFF awaitResponse()
+    next()
 }
 
 awaitResponse() {
-  a resposta é correta?
-  sim:
-    escolhe nova pessoa
-    sorteia a string
+  é a pessoa correta?
   não:
-    você errou
-  OFF  awaitResponse()
+    ignora
+  sim:
+    OFF awaitResponse()
+    a resposta é correta?
+    sim:
+      toca "Acertou miseravel"
+    não:
+      toca "Erou — SILVA, Fausto"
+    next()
 }
 
 */
