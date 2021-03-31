@@ -1,6 +1,7 @@
 // @ts-check
 import Discord from "discord.js";
 import { sleep } from "../utils/time.js";
+import { default as textToImage } from "text-to-image";
 
 class GameLogic {
   static PASSWORD_CHARS =
@@ -17,12 +18,12 @@ class GameLogic {
     this.running = false;
     /** @type {Boolean|Number}*/
     this.awaitingAnswer = false;
-    /** @type {String|Number} */
+    /** @type {String} */
     this.currentPassword = undefined;
     /** @type {Discord.GuildMember} */
     this.lastMember = undefined;
 
-    this.checkRound = this.checkRound.bind(this);
+    this._checkRound = this.checkRound.bind(this);
   }
 
   /**
@@ -50,7 +51,7 @@ class GameLogic {
 
     msg.channel.send("Resultado: ??????");
 
-    if (this.awaitingAnswer) this.client.off("message", this.checkRound);
+    if (this.awaitingAnswer) this.client.off("message", this._checkRound);
   }
 
   /**
@@ -81,7 +82,7 @@ class GameLogic {
     this.lastMember = newMember;
 
     this.awaitingAnswer = true;
-    this.client.on("message", this.checkRound);
+    this.client.on("message", this._checkRound);
   }
 
   /**
@@ -93,7 +94,7 @@ class GameLogic {
       return;
     }
 
-    this.client.off("message", this.checkRound);
+    this.client.off("message", this._checkRound);
     this.awaitingAnswer = false;
 
     if (msg.cleanContent != this.currentPassword) {
@@ -129,12 +130,23 @@ class GameLogic {
     ]);
     await Promise.all([countdownMsg.edit("_3… 2…_"), sleep(1000)]);
     await Promise.all([countdownMsg.edit("_3… 2… 1…_"), sleep(1000)]);
-    await countdownMsg.edit(`digite: **${this.currentPassword}**`);
+    await countdownMsg.edit(`Vai filhão`);
+    await this.sendImage(msg, this.currentPassword);
+  }
 
-    // msg.channel.send("2");
-    // msg.channel.send("1");
-    // await sleep(1000);
-    // msg.channel.send(`digite: **${this.currentPassword}**`);
+  /**
+   *
+   * @param {Discord.Message} msg
+   * @param {String} text
+   */
+  async sendImage(msg, text) {
+    if (msg.member.user.bot) return;
+
+    let dataUri = await textToImage.generate(text);
+
+    const sfbuff = new Buffer.from(dataUri.split(",")[1], "base64");
+    const sfattach = new Discord.MessageAttachment(sfbuff, "output.png");
+    msg.channel.send(sfattach);
   }
 
   /**
