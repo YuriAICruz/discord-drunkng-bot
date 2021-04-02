@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { games } from "../gameLogic.js";
+import { games } from "../gameLogic/index.js";
 
 /**
  *

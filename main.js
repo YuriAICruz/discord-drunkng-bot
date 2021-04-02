@@ -1,5 +1,8 @@
 import { Client } from "discord.js";
-import { end, help, start } from "./src/commands/index.js";
+import { end, help, start, testSound } from "./src/commands/index.js";
+
+import { default as Canvas } from "canvas";
+Canvas.registerFont("./src/fonts/comic.ttf", { family: "comic sans" });
 
 const TOKEN = process.env.TOKEN;
 
@@ -23,14 +26,17 @@ client.on("message", (msg) => {
   if (!channel) return;
 
   switch (cmds[1]) {
-    case "start":
-      start(client, msg, cmds.slice(2));
-      break;
     case "end":
       end(msg);
       break;
     case "help":
       help(msg);
+      break;
+    case "sound":
+      testSound(client, msg);
+      break;
+    case "start":
+      start(client, msg, cmds.slice(2));
       break;
   }
 });

@@ -1,4 +1,4 @@
-import GameLogic from "./classes/GameLogicValeno.js";
+import GameLogic from "./gameLogic.js";
 
 /**
  * Coleção de jogos em jogo.

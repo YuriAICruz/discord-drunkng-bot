@@ -1,6 +1,5 @@
 import Discord from "discord.js";
-import { games } from "../gameLogic.js";
-import GameLogic from "../classes/GameLogicValeno.js";
+import { games, GameLogic } from "../gameLogic/index.js";
 
 /**
  * @param {Discord.Client} client
