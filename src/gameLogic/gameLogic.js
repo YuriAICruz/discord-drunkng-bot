@@ -106,6 +106,8 @@ class GameLogic {
 
     this.currentPassword = createSyllabicPassword(this.passwordLength);
 
+    await sleep(1000, this.gameSignal);
+
     await this.respond(msg, newMember);
 
     this.lastMember = newMember;
@@ -183,8 +185,7 @@ class GameLogic {
    */
   addScore(id, value) {
     if (this.score.has(id)) this.score.set(id, this.score.get(id) + value);
-
-    this.score.set(id, value);
+    else this.score.set(id, value);
   }
 
   /**
